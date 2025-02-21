@@ -1,3 +1,4 @@
+mod build;
 mod package;
 
 use std::fs;
@@ -5,11 +6,13 @@ use std::path::Path;
 
 use serde::Deserialize;
 
+use build::Build;
 use package::Package;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
     package: Package,
+    build: Build,
 }
 
 impl Config {
