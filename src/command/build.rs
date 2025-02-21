@@ -18,6 +18,7 @@ impl From<CliOptions> for BuildOptions {
     fn from(cmd: CliOptions) -> Self {
         match cmd {
             CliOptions::Build => BuildOptions,
+            _ => unreachable!(),
         }
     }
 }
@@ -96,3 +97,4 @@ fn save_banked<'a, const N: usize> (
 
     Ok(())
 }
+

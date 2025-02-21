@@ -2,6 +2,6 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 pub struct Package {
-    name: String,
-    version: String,
+    pub name: String,
+    pub version: String,
 }
