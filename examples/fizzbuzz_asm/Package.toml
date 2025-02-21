@@ -1,5 +1,5 @@
 [package]
-name = "helloworld_asm"
+name = "fizzbuzz_asm"
 version = "0.1.0"
 
 [build]
