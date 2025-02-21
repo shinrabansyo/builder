@@ -1,8 +1,9 @@
+mod command;
 mod config;
 
-use config::Config;
+use command::{parse_args, Command};
 
 fn main() -> anyhow::Result<()> {
-    println!("{:?}", Config::load("Package.toml")?);
-    Ok(())
+    let command = parse_args();
+    command.run()
 }
