@@ -18,9 +18,16 @@ impl From<CliOptions> for New {
 
 impl Command for New {
     fn run(self) -> anyhow::Result<()> {
-        // 1. Package.toml
+        // 1. ディレクトリ作成
+        fs::create_dir_all(&self.name)?;
+
+        // 2. Package.toml
         fs::write(
-            "Package.toml",
+            format!(
+                "{}/{}",
+                self.name,
+                "Package.toml",
+            ),
             format!(
                 r#"[package]
 name = "{}"
@@ -34,9 +41,9 @@ output = "bank"
             ),
         )?;
 
-        // 2. src ディレクトリ
-        fs::create_dir("src")?;
-        fs::write("src/main.asm", "\n===\n\n")?;
+        // 3. src ディレクトリ
+        fs::create_dir(format!("{}/{}", self.name, "src"))?;
+        fs::write(format!("{}/{}", self.name, "src/main.asm"), "\n===\n\n")?;
 
         Ok(())
     }

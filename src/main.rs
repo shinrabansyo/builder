@@ -14,12 +14,12 @@ use command::Command;
 #[bpaf(options, version)]
 pub enum CliOptions {
     #[bpaf(command)]
-    Init {
+    New {
         #[bpaf(short, long, fallback("helloworld".to_string()))]
         name: String,
     },
     #[bpaf(command)]
-    New {
+    Init {
         #[bpaf(short, long, fallback("helloworld".to_string()))]
         name: String,
     },
@@ -34,8 +34,8 @@ pub enum CliOptions {
 fn main() -> anyhow::Result<()> {
     let opts = cli_options().run();
     match opts {
-        CliOptions::Init { .. } => Init::from(opts).run(),
         CliOptions::New { .. } => New::from(opts).run(),
+        CliOptions::Init { .. } => Init::from(opts).run(),
         CliOptions::Info => Info::from(opts).run(),
         CliOptions::Build => Build::from(opts).run(),
         CliOptions::Debug => Debug::from(opts).run(),
