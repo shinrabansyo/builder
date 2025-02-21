@@ -4,18 +4,18 @@ use crate::command::{Command, CliOptions};
 use crate::config::Config;
 
 #[derive(Debug, Clone, Bpaf)]
-pub struct InfoOptions;
+pub struct Info;
 
-impl From<CliOptions> for InfoOptions {
+impl From<CliOptions> for Info {
     fn from(cmd: CliOptions) -> Self {
         match cmd {
-            CliOptions::Info => InfoOptions,
+            CliOptions::Info => Info,
             _ => unreachable!(),
         }
     }
 }
 
-impl Command for InfoOptions {
+impl Command for Info {
     fn run(self) -> anyhow::Result<()> {
         // 1. Package.toml 読み込み
         let config = Config::load("Package.toml")?;

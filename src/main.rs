@@ -3,23 +3,23 @@ mod config;
 
 use bpaf::Bpaf;
 
-use command::build::BuildOptions;
-use command::info::InfoOptions;
+use command::build::Build;
+use command::info::Info;
 use command::Command;
 
 #[derive(Debug, Clone, Bpaf)]
 #[bpaf(options, version)]
 pub enum CliOptions {
     #[bpaf(command)]
-    Build,
-    #[bpaf(command)]
     Info,
+    #[bpaf(command)]
+    Build,
 }
 
 fn main() -> anyhow::Result<()> {
     let opts = cli_options().run();
     match opts {
-        CliOptions::Build => BuildOptions::from(opts).run(),
-        CliOptions::Info => InfoOptions::from(opts).run(),
+        CliOptions::Info => Info::from(opts).run(),
+        CliOptions::Build => Build::from(opts).run(),
     }
 }

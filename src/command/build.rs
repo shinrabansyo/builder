@@ -12,18 +12,18 @@ use crate::config::build::{InputType, OutputType};
 use crate::config::Config;
 
 #[derive(Debug, Clone, Bpaf)]
-pub struct BuildOptions;
+pub struct Build;
 
-impl From<CliOptions> for BuildOptions {
+impl From<CliOptions> for Build {
     fn from(cmd: CliOptions) -> Self {
         match cmd {
-            CliOptions::Build => BuildOptions,
+            CliOptions::Build => Build,
             _ => unreachable!(),
         }
     }
 }
 
-impl Command for BuildOptions {
+impl Command for Build {
     fn run(self) -> anyhow::Result<()> {
         // 1. Package.toml 読み込み
         let config = Config::load("Package.toml")?;
