@@ -21,7 +21,10 @@ impl Command for New {
         // 1. ディレクトリ作成
         fs::create_dir_all(&self.name)?;
 
-        // 2. Package.toml
+        // 2. .gitignore
+        fs::write(format!("{}/.gitignore", self.name), "target*/\n")?;
+
+        // 3. Package.toml
         fs::write(
             format!(
                 "{}/{}",
@@ -41,9 +44,9 @@ output = "bank"
             ),
         )?;
 
-        // 3. src ディレクトリ
-        fs::create_dir(format!("{}/{}", self.name, "src"))?;
-        fs::write(format!("{}/{}", self.name, "src/main.asm"), "\n===\n\n")?;
+        // 4. src ディレクトリ
+        fs::create_dir(format!("{}/src", self.name))?;
+        fs::write(format!("{}/src/main.asm", self.name), "\n===\n\n")?;
 
         Ok(())
     }
