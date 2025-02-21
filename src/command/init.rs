@@ -34,7 +34,10 @@ output = "bank"
             ),
         )?;
 
-        // 2. src ディレクトリ
+        // 2. .gitignore
+        fs::write(".gitignore", "target*/\n")?;
+
+        // 3. src ディレクトリ
         fs::create_dir("src")?;
         fs::write("src/main.asm", "\n===\n\n")?;
 
