@@ -2,8 +2,8 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 pub struct Build {
-    input: InputType,
-    output: OutputType,
+    pub input: InputType,
+    pub output: OutputType,
 }
 
 #[derive(Debug, Deserialize)]
@@ -16,4 +16,6 @@ pub enum InputType {
 pub enum OutputType {
     #[serde(rename = "normal")]
     Normal,
+    #[serde(rename = "bank")]
+    Bank,
 }

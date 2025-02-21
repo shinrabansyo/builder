@@ -75,11 +75,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "sb_asm"
+version = "0.1.0"
+source = "git+https://github.com/shinrabansyo/assembler/?rev=5f26888a338b2cd677f9b3c8de955bc80ed1b8de#5f26888a338b2cd677f9b3c8de955bc80ed1b8de"
+dependencies = [
+ "anyhow",
+ "thiserror",
+]
+
+[[package]]
 name = "sb_build"
 version = "0.1.0"
 dependencies = [
  "anyhow",
  "bpaf",
+ "sb_asm",
  "serde",
  "thiserror",
  "toml",
