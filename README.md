@@ -15,7 +15,7 @@ Version: 0.1.0
 ## Commands
 
 - `new` : Create a new project in an existing directory
-- `init` : Create a new project in a current directory
+- `init` : Create a new project in the current directory
 - `info` : Display information about the project
 - `build` : Build the project
 - `debug` : Debug the project
