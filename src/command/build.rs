@@ -1,17 +1,12 @@
-use std::ffi::OsStr;
 use std::fs;
 use std::io::Write;
-use std::path::{Path, PathBuf};
-
-use bpaf::Bpaf;
-
-use sb_asm::assemble;
 
 use crate::command::{Command, CliOptions};
-use crate::config::build::{InputType, OutputType};
+use crate::command::utils::build;
+use crate::config::build::OutputType;
 use crate::config::Config;
 
-#[derive(Debug, Clone, Bpaf)]
+#[derive(Debug, Clone)]
 pub struct Build;
 
 impl From<CliOptions> for Build {
@@ -28,24 +23,10 @@ impl Command for Build {
         // 1. Package.toml 読み込み
         let config = Config::load("Package.toml")?;
 
-        // 2. 対象ファイル列挙
-        let ext_filter = match &config.build.input {
-            InputType::Asm => |ext: &OsStr| ext == "asm",
-        };
-        let src_files = find_files("src/", &ext_filter)?;
+        // 2. ビルド
+        let (data, inst) = build(&config)?;
 
-        // 3. 実行
-        let (data, inst) = match &config.build.input {
-            InputType::Asm => {
-                let input = src_files
-                    .into_iter()
-                    .map(|path| fs::read_to_string(path).unwrap())
-                    .collect::<String>();
-                assemble(&input)?
-            }
-        };
-
-        // 4. 出力
+        // 3. 出力
         let _ = fs::remove_dir("target/build");
         fs::create_dir_all("target/build")?;
         match &config.build.output {
@@ -63,22 +44,6 @@ impl Command for Build {
     }
 }
 
-fn find_files<T, F>(path: T, ext_filter: &F) -> anyhow::Result<Vec<PathBuf>>
-where
-    T: AsRef<Path>,
-    F: Fn(&OsStr) -> bool,
-{
-    let mut files = vec![];
-    for entry in fs::read_dir(path)? {
-        let path = entry?.path();
-        if path.is_dir() {
-            find_files(&path, ext_filter)?;
-        } else if ext_filter(path.extension().unwrap_or_default()) {
-            files.push(path);
-        }
-    }
-    Ok(files)
-}
 
 fn save_banked<'a, const N: usize> (
     prefix: &str,
@@ -97,4 +62,3 @@ fn save_banked<'a, const N: usize> (
 
     Ok(())
 }
-

@@ -1,9 +1,7 @@
-use bpaf::Bpaf;
-
 use crate::command::{Command, CliOptions};
 use crate::config::Config;
 
-#[derive(Debug, Clone, Bpaf)]
+#[derive(Debug, Clone)]
 pub struct Info;
 
 impl From<CliOptions> for Info {

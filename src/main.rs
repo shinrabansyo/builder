@@ -5,6 +5,7 @@ use bpaf::Bpaf;
 
 use command::build::Build;
 use command::info::Info;
+use command::debug::Debug;
 use command::Command;
 
 #[derive(Debug, Clone, Bpaf)]
@@ -14,6 +15,8 @@ pub enum CliOptions {
     Info,
     #[bpaf(command)]
     Build,
+    #[bpaf(command)]
+    Debug,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -21,5 +24,6 @@ fn main() -> anyhow::Result<()> {
     match opts {
         CliOptions::Info => Info::from(opts).run(),
         CliOptions::Build => Build::from(opts).run(),
+        CliOptions::Debug => Debug::from(opts).run(),
     }
 }
