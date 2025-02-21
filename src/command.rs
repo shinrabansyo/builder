@@ -1,6 +1,7 @@
 pub mod build;
 pub mod debug;
 pub mod info;
+pub mod init;
 pub mod new;
 mod utils;
 
