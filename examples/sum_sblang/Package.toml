@@ -1,0 +1,7 @@
+[package]
+name = "fizzbuzz_sblang"
+version = "0.1.0"
+
+[build]
+input = "sblang"
+output = "bank"
