@@ -1,5 +1,5 @@
 pub mod build;
-pub mod debug;
+pub mod run;
 pub mod info;
 pub mod init;
 pub mod new;
