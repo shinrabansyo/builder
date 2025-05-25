@@ -4,10 +4,10 @@ mod config;
 use bpaf::Bpaf;
 
 use command::build::Build;
-use command::debug::Debug;
 use command::info::Info;
 use command::init::Init;
 use command::new::New;
+use command::run::Run;
 use command::Command;
 
 #[derive(Debug, Clone, Bpaf)]
@@ -33,7 +33,7 @@ pub enum CliOptions {
     Build,
     /// Debug the project
     #[bpaf(command)]
-    Debug,
+    Run,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -43,6 +43,6 @@ fn main() -> anyhow::Result<()> {
         CliOptions::Init { .. } => Init::from(opts).run(),
         CliOptions::Info => Info::from(opts).run(),
         CliOptions::Build => Build::from(opts).run(),
-        CliOptions::Debug => Debug::from(opts).run(),
+        CliOptions::Run => Run::from(opts).run(),
     }
 }
