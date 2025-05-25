@@ -28,11 +28,14 @@ impl Command for Build {
 
         // 3. バンクファイル化
         if let OutputType::Bank = &config.build.output {
-            let data = fs::read_to_string("./target/build/data.hex")?;
-            save_banked::<4>("./target/build/data", data.split("\n").into_iter())?;
+            let data = fs::read_to_string("./target/out/data.hex")?;
+            let data = data.split("\n").into_iter();
+            save_banked::<4>("./target/out/data", data)?;
 
-            let inst = fs::read_to_string("./target/build/inst.hex")?;
-            save_banked::<6>("./target/build/inst", inst.split("\n").into_iter())?;
+
+            let inst = fs::read_to_string("./target/out/inst.hex")?;
+            let inst = inst.split("\n").into_iter();
+            save_banked::<6>("./target/out/inst", inst)?;
         }
 
         Ok(())

@@ -24,14 +24,14 @@ pub fn build(config: &Config) -> anyhow::Result<()> {
 
 fn build_asm(_: &Config) -> anyhow::Result<()> {
     // 1. target 準備
-    let _ = fs::remove_dir("target/build");
-    fs::create_dir_all("target/build")?;
+    let _ = fs::remove_dir("target/out");
+    fs::create_dir_all("target/out")?;
 
     // 2. アセンブル
     StdCommand::new("sb-assembler")
         .arg("./src/main.asm")
-        .arg("./target/build/data.hex")
-        .arg("./target/build/inst.hex")
+        .arg("./target/out/data.hex")
+        .arg("./target/out/inst.hex")
         .status()?;
 
     Ok(())
@@ -40,7 +40,9 @@ fn build_asm(_: &Config) -> anyhow::Result<()> {
 fn build_sblang(_: &Config) -> anyhow::Result<()> {
     // 1. target 準備
     let _ = fs::remove_dir("target/build");
+    let _ = fs::remove_dir("target/out");
     fs::create_dir_all("target/build")?;
+    fs::create_dir_all("target/out")?;
 
     // 2. コンパイル
     StdCommand::new("sb-compiler")
@@ -57,8 +59,8 @@ fn build_sblang(_: &Config) -> anyhow::Result<()> {
     // 4. アセンブル
     StdCommand::new("sb-assembler")
         .arg("./target/build/main.asm")
-        .arg("./target/build/data.hex")
-        .arg("./target/build/inst.hex")
+        .arg("./target/out/data.hex")
+        .arg("./target/out/inst.hex")
         .status()?;
 
     Ok(())
