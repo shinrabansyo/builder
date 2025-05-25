@@ -409,21 +409,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "sb_asm"
-version = "0.1.0"
-source = "git+https://github.com/shinrabansyo/assembler/?rev=5f26888a338b2cd677f9b3c8de955bc80ed1b8de#5f26888a338b2cd677f9b3c8de955bc80ed1b8de"
-dependencies = [
- "anyhow",
- "thiserror",
-]
-
-[[package]]
 name = "sb_build"
 version = "0.1.0"
 dependencies = [
  "anyhow",
  "bpaf",
- "sb_asm 0.1.0 (git+https://github.com/shinrabansyo/assembler/?rev=5f26888a338b2cd677f9b3c8de955bc80ed1b8de)",
  "sb_dbg_tui",
  "serde",
  "thiserror",
@@ -439,7 +429,7 @@ dependencies = [
  "bpaf",
  "crossterm",
  "ratatui",
- "sb_asm 0.1.0 (git+https://github.com/shinrabansyo/assembler?rev=16955a950b30a2c879f4acd7dff661db6d2bf741)",
+ "sb_asm",
  "sb_disasm",
  "sb_emu",
  "thiserror",
