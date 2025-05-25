@@ -28,11 +28,14 @@ fn build_asm(_: &Config) -> anyhow::Result<()> {
     fs::create_dir_all("target/out")?;
 
     // 2. アセンブル
-    StdCommand::new("sb-assembler")
+    let status = StdCommand::new("sb-assembler")
         .arg("./src/main.asm")
         .arg("./target/out/data.hex")
         .arg("./target/out/inst.hex")
         .status()?;
+    if !status.success() {
+        return Err(anyhow::anyhow!("Assemble process failed."));
+    }
 
     Ok(())
 }
@@ -45,23 +48,32 @@ fn build_sblang(_: &Config) -> anyhow::Result<()> {
     fs::create_dir_all("target/out")?;
 
     // 2. コンパイル
-    StdCommand::new("sb-compiler")
+    let status = StdCommand::new("sb-compiler")
         .arg("./src/main.sb")
         .arg("./target/build/main.obj")
         .status()?;
+    if !status.success() {
+        return Err(anyhow::anyhow!("Compile failed."));
+    }
 
     // 3. リンク
-    StdCommand::new("sb-linker")
+    let status = StdCommand::new("sb-linker")
         .arg("./target/build/main.obj")
         .arg("./target/build/main.asm")
         .status()?;
+    if !status.success() {
+        return Err(anyhow::anyhow!("Link failed."));
+    }
 
     // 4. アセンブル
-    StdCommand::new("sb-assembler")
+    let status = StdCommand::new("sb-assembler")
         .arg("./target/build/main.asm")
         .arg("./target/out/data.hex")
         .arg("./target/out/inst.hex")
         .status()?;
+    if !status.success() {
+        return Err(anyhow::anyhow!("Assemble failed."));
+    }
 
     Ok(())
 }
