@@ -24,20 +24,18 @@ impl Command for Build {
         let config = Config::load("Package.toml")?;
 
         // 2. ビルド
-        let (data, inst) = build(&config)?;
+        build(&config)?;
 
-        // 3. 出力
-        let _ = fs::remove_dir("target/build");
-        fs::create_dir_all("target/build")?;
-        match &config.build.output {
-            OutputType::Normal => {
-                fs::write("target/build/data.hex", data)?;
-                fs::write("target/build/inst.hex", inst)?;
-            }
-            OutputType::Bank => {
-                save_banked::<4>("target/build/data", data.split("\n").into_iter())?;
-                save_banked::<6>("target/build/inst", inst.split("\n").into_iter())?;
-            }
+        // 3. バンクファイル化
+        if let OutputType::Bank = &config.build.output {
+            let data = fs::read_to_string("./target/out/data.hex")?;
+            let data = data.split("\n").into_iter();
+            save_banked::<4>("./target/out/data", data)?;
+
+
+            let inst = fs::read_to_string("./target/out/inst.hex")?;
+            let inst = inst.split("\n").into_iter();
+            save_banked::<6>("./target/out/inst", inst)?;
         }
 
         Ok(())

@@ -10,6 +10,8 @@ pub struct Build {
 pub enum InputType {
     #[serde(rename = "asm")]
     Asm,
+    #[serde(rename = "sblang")]
+    Sblang,
 }
 
 #[derive(Debug, Deserialize)]

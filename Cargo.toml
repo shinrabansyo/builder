@@ -9,5 +9,4 @@ thiserror = "2.0.11"
 serde = { version = "1.0.218", features = ["derive"] }
 toml = "0.8.20"
 bpaf = { version = "0.9.15", features = ["derive"] }
-sb_asm = { git = "https://github.com/shinrabansyo/assembler/", rev = "5f26888a338b2cd677f9b3c8de955bc80ed1b8de" }
 sb_dbg_tui = { git = "https://github.com/shinrabansyo/debugger", rev = "f1364e9645869c79f59d4fde33654ab7d3aa43b3" }

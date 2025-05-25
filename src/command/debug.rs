@@ -1,3 +1,5 @@
+use std::fs;
+
 use crate::command::{Command, CliOptions};
 use crate::command::utils::build;
 use crate::config::Config;
@@ -20,11 +22,13 @@ impl Command for Debug {
         let config = Config::load("Package.toml")?;
 
         // 2. ビルド
-        let (data, inst) = build(&config)?;
-        let data = convert_to_u8(data.split("\n"));
-        let inst = convert_to_u8(inst.split("\n"));
+        build(&config)?;
 
         // 3. デバッガ起動
+        let data = fs::read_to_string("./target/build/data.hex")?;
+        let data = convert_to_u8(data.split("\n"));
+        let inst = fs::read_to_string("./target/build/inst.hex")?;
+        let inst = convert_to_u8(inst.split("\n"));
         sb_dbg_tui::run(0, &data, &inst)?;
 
         Ok(())
