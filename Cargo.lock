@@ -409,7 +409,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "sb_build"
+name = "sb_builder_cli"
 version = "0.1.0"
 dependencies = [
  "anyhow",
