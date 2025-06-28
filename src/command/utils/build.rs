@@ -25,13 +25,13 @@ pub fn build(config: &Config) -> anyhow::Result<()> {
 fn build_asm(_: &Config) -> anyhow::Result<()> {
     // 1. target 準備
     let _ = fs::remove_dir("target/out");
-    fs::create_dir_all("target/out")?;
+    fs::create_dir_all("target/out/hex")?;
 
     // 2. アセンブル
     let status = StdCommand::new("sb-assembler")
         .arg("./src/main.asm")
-        .arg("./target/out/data.hex")
-        .arg("./target/out/inst.hex")
+        .arg("./target/out/hex/data.hex")
+        .arg("./target/out/hex/inst.hex")
         .status()?;
     if !status.success() {
         return Err(anyhow::anyhow!("Assemble process failed."));
@@ -45,7 +45,7 @@ fn build_sblang(config: &Config) -> anyhow::Result<()> {
     let _ = fs::remove_dir("target/build");
     let _ = fs::remove_dir("target/out");
     fs::create_dir_all("target/build")?;
-    fs::create_dir_all("target/out")?;
+    fs::create_dir_all("target/out/hex")?;
 
     // 2. コンパイル
     let status = StdCommand::new("sb-compiler")
@@ -77,8 +77,8 @@ stack_addr = {}
     // 4. アセンブル
     let status = StdCommand::new("sb-assembler")
         .arg("./target/build/main.asm")
-        .arg("./target/out/data.hex")
-        .arg("./target/out/inst.hex")
+        .arg("./target/out/hex/data.hex")
+        .arg("./target/out/hex/inst.hex")
         .status()?;
     if !status.success() {
         return Err(anyhow::anyhow!("Assemble failed."));

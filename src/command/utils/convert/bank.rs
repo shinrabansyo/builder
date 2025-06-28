@@ -4,11 +4,11 @@ use std::io::Write;
 pub fn convert_banked() -> anyhow::Result<()> {
     fs::create_dir_all("./target/out/banked")?;
 
-    let data = fs::read_to_string("./target/out/data.hex")?;
+    let data = fs::read_to_string("./target/out/hex/data.hex")?;
     let data = data.split("\n").into_iter();
     save_banked::<4>("./target/out/banked/data", data)?;
 
-    let inst = fs::read_to_string("./target/out/inst.hex")?;
+    let inst = fs::read_to_string("./target/out/hex/inst.hex")?;
     let inst = inst.split("\n").into_iter();
     save_banked::<6>("./target/out/banked/inst", inst)?;
 

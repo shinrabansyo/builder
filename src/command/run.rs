@@ -29,9 +29,9 @@ impl Command for Run {
             .arg("--format")
             .arg("bytechar")
             .arg("--data")
-            .arg("./target/out/data.hex")
+            .arg("./target/out/hex/data.hex")
             .arg("--inst")
-            .arg("./target/out/inst.hex")
+            .arg("./target/out/hex/inst.hex")
             .status()?;
 
         Ok(())
