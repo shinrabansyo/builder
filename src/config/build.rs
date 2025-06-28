@@ -18,4 +18,6 @@ pub enum InputType {
 pub enum OutputType {
     #[serde(rename = "bank")]
     Bank,
+    #[serde(rename = "bin")]
+    Bin,
 }
