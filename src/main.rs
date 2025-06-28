@@ -16,13 +16,13 @@ pub enum CliOptions {
     /// Create a new project in an existsing directory
     #[bpaf(command)]
     New {
-        #[bpaf(short, long, fallback("helloworld".to_string()))]
+        #[bpaf(positional, fallback("helloworld".to_string()))]
         name: String,
     },
     /// Initialize a new project in the current directory
     #[bpaf(command)]
     Init {
-        #[bpaf(short, long, fallback("helloworld".to_string()))]
+        #[bpaf(positional, fallback("helloworld".to_string()))]
         name: String,
     },
     /// Display information about the project
