@@ -40,7 +40,7 @@ fn build_asm(_: &Config) -> anyhow::Result<()> {
     Ok(())
 }
 
-fn build_sblang(_: &Config) -> anyhow::Result<()> {
+fn build_sblang(config: &Config) -> anyhow::Result<()> {
     // 1. target 準備
     let _ = fs::remove_dir("target/build");
     let _ = fs::remove_dir("target/out");
@@ -57,7 +57,16 @@ fn build_sblang(_: &Config) -> anyhow::Result<()> {
     }
 
     // 3. リンク
+    let script = format!(r#"[general]
+main = ".main.main"
+stack_addr = {}
+"#,
+        config.link.stack_addr,
+    );
+    fs::write("./target/build/link.toml", script)?;
+
     let status = StdCommand::new("sb-linker")
+        .arg("./target/build/link.toml")
         .arg("./target/build/main.obj")
         .arg("./target/build/main.asm")
         .status()?;
