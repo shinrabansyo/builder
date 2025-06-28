@@ -1,7 +1,7 @@
 use std::process::Command as StdCommand;
 
 use crate::command::{Command, CliOptions};
-use crate::command::utils::build;
+use crate::command::utils::build::build;
 use crate::config::Config;
 
 #[derive(Debug, Clone)]
