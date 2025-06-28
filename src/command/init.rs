@@ -27,7 +27,7 @@ version = "0.1.0"
 
 [build]
 input = "sblang"
-output = []
+output = ["bin"]
 
 [link]
 stack_addr = 0x0000_0100
