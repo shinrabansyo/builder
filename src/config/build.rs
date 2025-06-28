@@ -3,7 +3,7 @@ use serde::Deserialize;
 #[derive(Debug, Deserialize)]
 pub struct Build {
     pub input: InputType,
-    pub output: OutputType,
+    pub output: Vec<OutputType>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -16,8 +16,6 @@ pub enum InputType {
 
 #[derive(Debug, Deserialize)]
 pub enum OutputType {
-    #[serde(rename = "normal")]
-    Normal,
     #[serde(rename = "bank")]
     Bank,
 }
