@@ -1,1 +1,1 @@
-mod bank;   pub use bank::convert_banked;
+mod bank;   pub use bank::convert_hex_bank;
