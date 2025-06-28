@@ -25,28 +25,32 @@ impl Command for New {
         fs::write(format!("{}/.gitignore", self.name), "target*/\n")?;
 
         // 3. Package.toml
-        fs::write(
-            format!(
-                "{}/{}",
-                self.name,
-                "Package.toml",
-            ),
-            format!(
+        let toml_path = format!("{}/Package.toml", self.name);
+        let toml_content = format!(
                 r#"[package]
 name = "{}"
 version = "0.1.0"
 
 [build]
-input = "asm"
-output = "bank"
+output = ["bin"]
+
+[link]
+stack_addr = 0x0000_0100
 "#,
                 self.name,
-            ),
-        )?;
+            );
+        fs::write(toml_path, toml_content)?;
 
         // 4. src ディレクトリ
         fs::create_dir(format!("{}/src", self.name))?;
-        fs::write(format!("{}/src/main.asm", self.name), "\n===\n\n")?;
+
+        // 5. プログラムのテンプレート
+        let sb_path = format!("{}/src/main.sb", self.name);
+        let sb_content = r#"fn main() -> i32 {
+    return 0;
+}
+"#;
+        fs::write(sb_path, sb_content)?;
 
         Ok(())
     }

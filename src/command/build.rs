@@ -1,8 +1,6 @@
-use std::fs;
-use std::io::Write;
-
 use crate::command::{Command, CliOptions};
-use crate::command::utils::build;
+use crate::command::utils::build::build;
+use crate::command::utils::convert::{convert_bin, convert_hex_bank};
 use crate::config::build::OutputType;
 use crate::config::Config;
 
@@ -26,37 +24,14 @@ impl Command for Build {
         // 2. ビルド
         build(&config)?;
 
-        // 3. バンクファイル化
-        if let OutputType::Bank = &config.build.output {
-            let data = fs::read_to_string("./target/out/data.hex")?;
-            let data = data.split("\n").into_iter();
-            save_banked::<4>("./target/out/data", data)?;
-
-
-            let inst = fs::read_to_string("./target/out/inst.hex")?;
-            let inst = inst.split("\n").into_iter();
-            save_banked::<6>("./target/out/inst", inst)?;
+        // 3. 出力形式に応じて変換
+        for output_opt in &config.build.output {
+            match output_opt {
+                OutputType::Bank => convert_hex_bank()?,
+                OutputType::Bin => convert_bin()?,
+            }
         }
 
         Ok(())
     }
-}
-
-
-fn save_banked<'a, const N: usize> (
-    prefix: &str,
-    elems: impl Iterator<Item = &'a str>,
-) -> anyhow::Result<()> {
-    let mut outputs = vec![];
-    for idx in 0..N {
-        let path = format!("{}_{}.hex", prefix, idx);
-        outputs.push(fs::File::create(path)?);
-    }
-
-    for (idx, elem) in elems.enumerate() {
-        outputs[idx % N].write(elem.as_bytes())?;
-        outputs[idx % N].write(b"\n")?;
-    }
-
-    Ok(())
 }
