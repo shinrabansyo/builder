@@ -1,6 +1,6 @@
 use crate::command::{Command, CliOptions};
 use crate::command::utils::build::build;
-use crate::command::utils::convert::{convert_bin, convert_hex_bank};
+use crate::command::utils::convert::{convert_hex_bank, convert_raw};
 use crate::config::build::OutputType;
 use crate::config::Config;
 
@@ -28,7 +28,7 @@ impl Command for Build {
         for output_opt in &config.build.output {
             match output_opt {
                 OutputType::Bank => convert_hex_bank()?,
-                OutputType::Bin => convert_bin()?,
+                OutputType::Raw => convert_raw()?,
             }
         }
 

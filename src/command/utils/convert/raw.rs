@@ -2,7 +2,7 @@ use std::fs;
 use std::fs::File;
 use std::io::Write;
 
-pub fn convert_bin() -> anyhow::Result<()> {
+pub fn convert_raw() -> anyhow::Result<()> {
     fs::create_dir_all("./target/out/bin")?;
 
     let data = fs::read_to_string("./target/out/hex/data.hex")?;

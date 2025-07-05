@@ -9,6 +9,6 @@ pub struct Build {
 pub enum OutputType {
     #[serde(rename = "bank")]
     Bank,
-    #[serde(rename = "bin")]
-    Bin,
+    #[serde(rename = "raw")]
+    Raw,
 }
