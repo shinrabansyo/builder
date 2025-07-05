@@ -32,7 +32,7 @@ name = "{}"
 version = "0.1.0"
 
 [build]
-output = ["bin"]
+output = ["bin"]  # "bin", "hex-bank", "raw"
 
 [link]
 stack_addr = 0x0000_0100
