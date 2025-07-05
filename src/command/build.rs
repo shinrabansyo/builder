@@ -27,7 +27,7 @@ impl Command for Build {
         // 3. 出力形式に応じて変換
         for output_opt in &config.build.output {
             match output_opt {
-                OutputType::Bank => convert_hex_bank()?,
+                OutputType::HexBank => convert_hex_bank()?,
                 OutputType::Raw => convert_raw()?,
             }
         }

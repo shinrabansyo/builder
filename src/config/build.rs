@@ -7,8 +7,8 @@ pub struct Build {
 
 #[derive(Debug, Deserialize)]
 pub enum OutputType {
-    #[serde(rename = "bank")]
-    Bank,
+    #[serde(rename = "hex-bank")]
+    HexBank,
     #[serde(rename = "raw")]
     Raw,
 }
