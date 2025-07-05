@@ -1,19 +1,22 @@
 mod command;
 mod config;
 
+use std::path::PathBuf;
+
 use bpaf::Bpaf;
 
 use command::build::Build;
 use command::info::Info;
 use command::init::Init;
 use command::new::New;
+use command::oneshot::Oneshot;
 use command::run::Run;
 use command::Command;
 
 #[derive(Debug, Clone, Bpaf)]
 #[bpaf(options, version)]
 pub enum CliOptions {
-    /// Create a new project in an existsing directory
+    /// Create a new project
     #[bpaf(command)]
     New {
         #[bpaf(positional, fallback("helloworld".to_string()))]
@@ -34,6 +37,14 @@ pub enum CliOptions {
     /// Debug the project
     #[bpaf(command)]
     Run,
+    /// Oneshot mode, run command on a single file
+    #[bpaf(command)]
+    Oneshot {
+        #[bpaf(positional)]
+        file: PathBuf,
+        #[bpaf(positional("SUB-COMMAND"), many)]
+        subcommand: Vec<String>,
+    }
 }
 
 fn main() -> anyhow::Result<()> {
@@ -44,5 +55,6 @@ fn main() -> anyhow::Result<()> {
         CliOptions::Info => Info::from(opts).run(),
         CliOptions::Build => Build::from(opts).run(),
         CliOptions::Run => Run::from(opts).run(),
+        CliOptions::Oneshot { .. } => Oneshot::from(opts).run(),
     }
 }
