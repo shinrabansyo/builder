@@ -1,44 +1,54 @@
-use std::ffi::OsStr;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::process::Command as StdCommand;
 
-use sb_asm::assemble;
-
-use crate::config::build::InputType;
 use crate::config::Config;
 
-pub fn build(config: &Config) -> anyhow::Result<(String, String)> {
-    // 1. 対象ファイル列挙
-    let ext_filter = match &config.build.input {
-        InputType::Asm => |ext: &OsStr| ext == "asm",
-    };
-    let src_files = find_files("src/", &ext_filter)?;
-
-    // 2. ビルド
-    match &config.build.input {
-        InputType::Asm => {
-            let input = src_files
-                .into_iter()
-                .map(|path| fs::read_to_string(path).unwrap())
-                .collect::<String>();
-            assemble(&input)
-        }
+pub fn build(config: &Config) -> anyhow::Result<()> {
+    // 1. 準備
+    if !fs::exists("./src/main.sb")? {
+        return Err(anyhow::anyhow!("src/main.sb not found."));
     }
-}
+    let _ = fs::remove_dir("target/build");
+    let _ = fs::remove_dir("target/out");
+    fs::create_dir_all("target/build")?;
+    fs::create_dir_all("target/out/hex")?;
 
-fn find_files<T, F>(path: T, ext_filter: &F) -> anyhow::Result<Vec<PathBuf>>
-where
-    T: AsRef<Path>,
-    F: Fn(&OsStr) -> bool,
-{
-    let mut files = vec![];
-    for entry in fs::read_dir(path)? {
-        let path = entry?.path();
-        if path.is_dir() {
-            find_files(&path, ext_filter)?;
-        } else if ext_filter(path.extension().unwrap_or_default()) {
-            files.push(path);
-        }
+    // 2. コンパイル
+    let status = StdCommand::new("sb-compiler")
+        .arg("./src/main.sb")
+        .arg("./target/build/main.obj")
+        .status()?;
+    if !status.success() {
+        return Err(anyhow::anyhow!("Compile failed."));
     }
-    Ok(files)
+
+    // 3. リンク
+    let script = format!(r#"[general]
+main = ".main.main"
+stack_addr = {}
+"#,
+        config.link.stack_addr,
+    );
+    fs::write("./target/build/link.toml", script)?;
+
+    let status = StdCommand::new("sb-linker")
+        .arg("./target/build/link.toml")
+        .arg("./target/build/main.obj")
+        .arg("./target/build/main.asm")
+        .status()?;
+    if !status.success() {
+        return Err(anyhow::anyhow!("Link failed."));
+    }
+
+    // 4. アセンブル
+    let status = StdCommand::new("sb-assembler")
+        .arg("./target/build/main.asm")
+        .arg("./target/out/hex/data.hex")
+        .arg("./target/out/hex/inst.hex")
+        .status()?;
+    if !status.success() {
+        return Err(anyhow::anyhow!("Assemble failed."));
+    }
+
+    Ok(())
 }

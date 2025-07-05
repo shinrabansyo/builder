@@ -1,0 +1,28 @@
+fn main() -> i32 {
+    var sum = 0;
+    for (var cnt = 1; cnt <= 50; cnt += 1) {
+        sum += cnt;
+    }
+    println_i32(sum);
+    return 0;
+}
+
+fn println_i32(num: i32) {
+    print_i32(num);
+    asm! {
+        out R0[0] = 10
+    }
+}
+
+fn print_i32(num: i32) {
+    // 上位桁
+    if (num >= 10) {
+        print_i32(num / 10);
+    }
+
+    // 下位桁
+    var c = (num % 10) + 48;
+    asm! {
+        out R0[0] = c
+    }
+}

@@ -1,7 +1,0 @@
-[package]
-name = "fizzbuzz_asm"
-version = "0.1.0"
-
-[build]
-input = "asm"
-output = "bank"

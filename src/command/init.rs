@@ -19,24 +19,38 @@ impl From<CliOptions> for Init {
 impl Command for Init {
     fn run(self) -> anyhow::Result<()> {
         // 1. Package.toml
-        fs::write(
-            "Package.toml",
-            format!(
+        let toml_path = "Package.toml";
+        let toml_content = format!(
                 r#"[package]
 name = "{}"
 version = "0.1.0"
 
 [build]
-input = "asm"
-output = "bank"
+output = ["bin"]  # "bin", "hex-bank", "raw"
+
+[run]
+mode = "tui"      # "cli", "tui"
+
+[link]
+stack_addr = 0x0000_0100
 "#,
                 self.name,
-            ),
-        )?;
+            );
+        fs::write(toml_path, toml_content)?;
 
-        // 2. src ディレクトリ
+        // 2. .gitignore
+        fs::write(".gitignore", "target*/\n")?;
+
+        // 3. src ディレクトリ
         fs::create_dir("src")?;
-        fs::write("src/main.asm", "\n===\n\n")?;
+
+        // 4. プログラムのテンプレート
+        let sb_path = "src/main.sb";
+        let sb_content = r#"fn main() -> i32 {
+    return 0;
+}
+"#;
+        fs::write(sb_path, sb_content)?;
 
         Ok(())
     }
