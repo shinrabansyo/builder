@@ -2,6 +2,7 @@ use std::process::Command as StdCommand;
 
 use crate::command::{Command, CliOptions};
 use crate::command::utils::build::build;
+use crate::config::run::RunMode;
 use crate::config::Config;
 
 #[derive(Debug, Clone)]
@@ -24,9 +25,12 @@ impl Command for Run {
         // 2. ビルド
         build(&config)?;
 
-        // 3. デバッガ起動
-        StdCommand::new("sb-emulator-tui")
-            .arg("--format")
+        // 3. エミュレータ起動
+        let mut cmd = match config.run.mode {
+            RunMode::Cli => StdCommand::new("sb-emulator-cli"),
+            RunMode::Tui => StdCommand::new("sb-emulator-tui"),
+        };
+        cmd.arg("--format")
             .arg("bytechar")
             .arg("--data")
             .arg("./target/out/hex/data.hex")
