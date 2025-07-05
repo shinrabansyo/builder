@@ -3,15 +3,15 @@ use std::fs::File;
 use std::io::Write;
 
 pub fn convert_raw() -> anyhow::Result<()> {
-    fs::create_dir_all("./target/out/bin")?;
+    fs::create_dir_all("./target/out/raw")?;
 
     let data = fs::read_to_string("./target/out/hex/data.hex")?;
     let data = data.split("\n").into_iter();
-    save_as_binary("./target/out/bin/data.bin", data)?;
+    save_as_binary("./target/out/raw/data.raw", data)?;
 
     let inst = fs::read_to_string("./target/out/hex/inst.hex")?;
     let inst = inst.split("\n").into_iter();
-    save_as_binary("./target/out/bin/inst.bin", inst)?;
+    save_as_binary("./target/out/raw/inst.raw", inst)?;
 
     Ok(())
 }
