@@ -1,0 +1,20 @@
+fn main() -> i32 {
+    print_char('H');
+    print_char('e');
+    print_char('l');
+    print_char('l');
+    print_char('o');
+    print_char('W');
+    print_char('o');
+    print_char('r');
+    print_char('l');
+    print_char('d');
+    return 0;
+}
+
+fn print_char(c: char) {
+    var c = c as i32;
+    asm! {
+        out R0[0] = c
+    }
+}
