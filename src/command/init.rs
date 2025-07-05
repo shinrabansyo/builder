@@ -28,6 +28,9 @@ version = "0.1.0"
 [build]
 output = ["bin"]  # "bin", "hex-bank", "raw"
 
+[run]
+mode = "tui"      # "cli", "tui"
+
 [link]
 stack_addr = 0x0000_0100
 "#,
