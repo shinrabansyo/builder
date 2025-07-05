@@ -37,11 +37,9 @@ fn write_header(
     f.write_all(&[0x00, 0x00, 0x00, 0x00])?;
 
     // データ領域のサイズ
-    println!("data_size: {}, {:?}", data_size, data_size.to_le_bytes());
     f.write_all(&data_size.to_le_bytes())?;
 
     // 命令領域のサイズ
-    println!("inst_size: {}, {:?}", inst_size, inst_size.to_le_bytes());
     f.write_all(&inst_size.to_le_bytes())?;
 
     Ok(())
