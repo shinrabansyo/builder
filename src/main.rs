@@ -40,6 +40,8 @@ pub enum CliOptions {
     /// Oneshot mode, run command on a single file
     #[bpaf(command)]
     Oneshot {
+        #[bpaf(long, switch)]
+        bin_copy: bool,
         #[bpaf(positional)]
         file: PathBuf,
         #[bpaf(positional("SUB-COMMAND"), many)]
