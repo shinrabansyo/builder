@@ -1,0 +1,12 @@
+[package]
+name = "fizzbuzz"
+version = "0.1.0"
+
+[build]
+output = ["bin"]
+
+[run]
+mode = "tui"
+
+[link]
+stack_addr = 0x0000_0100
