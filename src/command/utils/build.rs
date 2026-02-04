@@ -15,8 +15,9 @@ pub fn build(config: &Config) -> anyhow::Result<()> {
 
     // 2. コンパイル
     let status = StdCommand::new("sb-compiler")
-        .arg("./src/main.sb")
+        .arg("-o")
         .arg("./target/build/main.obj")
+        .arg("./src/main.sb")
         .status()?;
     if !status.success() {
         return Err(anyhow::anyhow!("Compile failed."));
@@ -32,9 +33,11 @@ stack_addr = {}
     fs::write("./target/build/link.toml", script)?;
 
     let status = StdCommand::new("sb-linker")
+        .arg("-c")
         .arg("./target/build/link.toml")
-        .arg("./target/build/main.obj")
+        .arg("-o")
         .arg("./target/build/main.asm")
+        .arg("./target/build/main.obj")
         .status()?;
     if !status.success() {
         return Err(anyhow::anyhow!("Link failed."));
