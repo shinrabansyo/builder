@@ -1,4 +1,6 @@
+use std::env;
 use std::fs;
+use std::path::{Path, PathBuf};
 use std::process::Command as StdCommand;
 
 use crate::config::Config;
@@ -18,6 +20,7 @@ pub fn build(config: &Config) -> anyhow::Result<()> {
         .arg("-o")
         .arg("./target/build/main.obj")
         .arg("./src/main.sb")
+        .args(listup_lib()?)
         .status()?;
     if !status.success() {
         return Err(anyhow::anyhow!("Compile failed."));
@@ -54,4 +57,25 @@ stack_addr = {}
     }
 
     Ok(())
+}
+
+fn listup_lib() -> anyhow::Result<Vec<PathBuf>> {
+    fn __inner(dir: &Path) -> Vec<PathBuf> {
+        let mut libs = vec![];
+        if let Ok(entries) = fs::read_dir(dir) {
+            for entry in entries.flatten() {
+                let path: PathBuf = entry.path();
+                if path.is_dir() {
+                    libs.extend(__inner(&path));
+                } else if path.is_file() && path.extension().and_then(|s| s.to_str()) == Some("sb") {
+                    libs.push(path);
+                }
+            }
+        }
+        libs
+    }
+
+    let home_dir = env::var("HOME")?;
+    let lib_dir = format!("{}/.shinrabansyo/repos/compiler/library", home_dir);
+    Ok(__inner(&Path::new(&lib_dir)))
 }
