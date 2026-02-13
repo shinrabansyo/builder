@@ -4,21 +4,13 @@ use bpaf::Bpaf;
 
 use crate::command::Runnable;
 
-/// Initialize a new project in the current directory
-#[derive(Debug, Clone, Bpaf)]
-#[bpaf(command("init"))]
-pub struct Init {
-    #[bpaf(positional, fallback("helloworld".to_string()))]
-    name: String,
-}
+const GITIGNORE: &str =
+r#"target*/
+"#;
 
-impl Runnable for Init {
-    fn run(self) -> anyhow::Result<()> {
-        // 1. Package.toml
-        let toml_path = "Package.toml";
-        let toml_content = format!(
-                r#"[package]
-name = "{}"
+const PACKAGE_TOML: &str =
+r#"[package]
+name = "{%name%}"
 version = "0.1.0"
 
 [build]
@@ -29,24 +21,38 @@ mode = "tui"      # "cli", "tui"
 
 [link]
 stack_addr = 0x0000_0100
-"#,
-                self.name,
-            );
-        fs::write(toml_path, toml_content)?;
+"#;
 
-        // 2. .gitignore
-        fs::write(".gitignore", "target*/\n")?;
+const MAIN_SB: &str =
+r#"fn main() -> i32 {
+    return 0;
+}
+"#;
+
+/// Initialize a new project in the current directory
+#[derive(Debug, Clone, Bpaf)]
+#[bpaf(command("init"))]
+pub struct Init {
+    #[bpaf(positional, fallback("helloworld".to_string()))]
+    name: String,
+}
+
+impl Runnable for Init {
+    fn run(self) -> anyhow::Result<()> {
+        // 1. .gitignore
+        fs::write(".gitignore", GITIGNORE)?;
+
+        // 2. Package.toml
+        fs::write(
+            "Package.toml",
+            PACKAGE_TOML.replace("{%name%}", &self.name),
+        )?;
 
         // 3. src ディレクトリ
         fs::create_dir("src")?;
 
         // 4. プログラムのテンプレート
-        let sb_path = "src/main.sb";
-        let sb_content = r#"fn main() -> i32 {
-    return 0;
-}
-"#;
-        fs::write(sb_path, sb_content)?;
+        fs::write("src/main.sb", MAIN_SB)?;
 
         Ok(())
     }
