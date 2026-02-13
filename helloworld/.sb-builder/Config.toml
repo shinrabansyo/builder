@@ -1,0 +1,8 @@
+[compiler]
+bin = "sb-compiler"
+
+[linker]
+bin = "sb-linker"
+
+[assembler]
+bin = "sb-assembler"

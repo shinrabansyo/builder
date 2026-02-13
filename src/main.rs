@@ -59,5 +59,5 @@ impl Runnable for CliOptions {
 fn main() -> anyhow::Result<()> {
     cli_options()
         .run()
-        .run(MetaConfig::load_or_default("./sbconfig/Config.toml")?)
+        .run(MetaConfig::load_or_default("./.sb-builder/Config.toml")?)
 }

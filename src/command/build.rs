@@ -13,12 +13,12 @@ use crate::config_project::ProjectConfig;
 pub struct Build;
 
 impl Runnable for Build {
-    fn run(self, _: MetaConfig) -> anyhow::Result<()> {
+    fn run(self, meta_config: MetaConfig) -> anyhow::Result<()> {
         // 1. Package.toml 読み込み
         let prj_config = ProjectConfig::load("Package.toml")?;
 
         // 2. ビルド
-        my_build(&prj_config)?;
+        my_build(&meta_config, &prj_config)?;
 
         // 3. 出力形式に応じて変換
         for output_opt in &prj_config.build.output {

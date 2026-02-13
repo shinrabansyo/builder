@@ -14,12 +14,12 @@ use crate::config_project::ProjectConfig;
 pub struct Run;
 
 impl Runnable for Run {
-    fn run(self, _: MetaConfig) -> anyhow::Result<()> {
+    fn run(self, meta_config: MetaConfig) -> anyhow::Result<()> {
         // 1. Package.toml 読み込み
         let prj_config = ProjectConfig::load("Package.toml")?;
 
         // 2. ビルド
-        build(&prj_config)?;
+        build(&meta_config, &prj_config)?;
 
         // 3. エミュレータ起動
         let mut cmd = match prj_config.run.mode {

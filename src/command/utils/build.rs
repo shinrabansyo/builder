@@ -3,9 +3,13 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command as StdCommand;
 
+use crate::config_meta::MetaConfig;
 use crate::config_project::ProjectConfig;
 
-pub fn build(prj_config: &ProjectConfig) -> anyhow::Result<()> {
+pub fn build(
+    meta_config: &MetaConfig,
+    prj_config: &ProjectConfig,
+) -> anyhow::Result<()> {
     // 1. 準備
     if !fs::exists("./src/main.sb")? {
         return Err(anyhow::anyhow!("src/main.sb not found."));
@@ -16,7 +20,7 @@ pub fn build(prj_config: &ProjectConfig) -> anyhow::Result<()> {
     fs::create_dir_all("target/out/hex")?;
 
     // 2. コンパイル
-    let status = StdCommand::new("sb-compiler")
+    let status = StdCommand::new(&meta_config.compiler.bin)
         .arg("-o")
         .arg("./target/build/main.obj")
         .arg("./src/main.sb")
@@ -35,7 +39,7 @@ stack_addr = {}
     );
     fs::write("./target/build/link.toml", script)?;
 
-    let status = StdCommand::new("sb-linker")
+    let status = StdCommand::new(&meta_config.linker.bin)
         .arg("-c")
         .arg("./target/build/link.toml")
         .arg("-o")
@@ -47,7 +51,7 @@ stack_addr = {}
     }
 
     // 4. アセンブル
-    let status = StdCommand::new("sb-assembler")
+    let status = StdCommand::new(&meta_config.assembler.bin)
         .arg("./target/build/main.asm")
         .arg("./target/out/hex/data.hex")
         .arg("./target/out/hex/inst.hex")
