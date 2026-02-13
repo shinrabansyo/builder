@@ -16,8 +16,11 @@ use run::Run;
 #[derive(Debug, Deserialize)]
 pub struct ProjectConfig {
     pub package: Package,
+    #[serde(default)]
     pub build: Build,
+    #[serde(default)]
     pub run: Run,
+    #[serde(default)]
     pub link: Link,
 }
 

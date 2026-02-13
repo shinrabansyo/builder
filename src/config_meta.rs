@@ -13,8 +13,11 @@ use linker::Linker;
 
 #[derive(Debug, Default, Deserialize)]
 pub struct MetaConfig {
+    #[serde(default)]
     pub assembler: Assembler,
+    #[serde(default)]
     pub compiler: Compiler,
+    #[serde(default)]
     pub linker: Linker,
 }
 
