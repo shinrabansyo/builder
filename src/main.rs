@@ -1,62 +1,31 @@
 mod command;
-mod config;
+mod config_meta;
+mod config_project;
+mod tool;
 
 use std::path::PathBuf;
 
 use bpaf::Bpaf;
 
-use command::build::Build;
-use command::info::Info;
-use command::init::Init;
-use command::new::New;
-use command::oneshot::Oneshot;
-use command::run::Run;
-use command::Command;
+use command::{Command, Runnable, command};
+use config_meta::MetaConfig;
 
-#[derive(Debug, Clone, Bpaf)]
+#[derive(Debug, Bpaf)]
 #[bpaf(options, version)]
-pub enum CliOptions {
-    /// Create a new project
-    #[bpaf(command)]
-    New {
-        #[bpaf(positional, fallback("helloworld".to_string()))]
-        name: String,
-    },
-    /// Initialize a new project in the current directory
-    #[bpaf(command)]
-    Init {
-        #[bpaf(positional, fallback("helloworld".to_string()))]
-        name: String,
-    },
-    /// Display information about the project
-    #[bpaf(command)]
-    Info,
-    /// Build the project
-    #[bpaf(command)]
-    Build,
-    /// Debug the project
-    #[bpaf(command)]
-    Run,
-    /// Oneshot mode, run command on a single file
-    #[bpaf(command)]
-    Oneshot {
-        #[bpaf(long, switch)]
-        bin_copy: bool,
-        #[bpaf(positional)]
-        file: PathBuf,
-        #[bpaf(positional("SUB-COMMAND"), many)]
-        subcommand: Vec<String>,
-    }
+struct CliOptions {
+    /// Path to the meta configuration file (default: '.sb-builder/Config.toml')
+    #[bpaf(long, short, fallback("./.sb-builder/Config.toml".into()))]
+    meta_config: PathBuf,
+    /// Subcommand to execute
+    #[bpaf(external)]
+    command: Command,
 }
 
 fn main() -> anyhow::Result<()> {
-    let opts = cli_options().run();
-    match opts {
-        CliOptions::New { .. } => New::from(opts).run(),
-        CliOptions::Init { .. } => Init::from(opts).run(),
-        CliOptions::Info => Info::from(opts).run(),
-        CliOptions::Build => Build::from(opts).run(),
-        CliOptions::Run => Run::from(opts).run(),
-        CliOptions::Oneshot { .. } => Oneshot::from(opts).run(),
-    }
+    let opts = cli_options()
+        .header("A build and run tool for Shinrabansyo Project")
+        .usage("Usage: sb_builder_cli [-m=ARG] [COMMAND ...] ")
+        .run();
+    let meta_config = MetaConfig::load_or_default(&opts.meta_config)?;
+    opts.command.run(meta_config)
 }

@@ -1,56 +1,53 @@
 use std::fs;
 
-use crate::command::{Command, CliOptions};
+use bpaf::Bpaf;
 
-#[derive(Debug, Clone)]
-pub struct Init {
-    name: String,
-}
+use crate::command::Runnable;
+use crate::config_meta::MetaConfig;
 
-impl From<CliOptions> for Init {
-    fn from(cmd: CliOptions) -> Self {
-        match cmd {
-            CliOptions::Init { name } => Init { name },
-            _ => unreachable!(),
-        }
-    }
-}
+const GITIGNORE: &str =
+r#"target*/
+"#;
 
-impl Command for Init {
-    fn run(self) -> anyhow::Result<()> {
-        // 1. Package.toml
-        let toml_path = "Package.toml";
-        let toml_content = format!(
-                r#"[package]
-name = "{}"
+const PACKAGE_TOML: &str =
+r#"[package]
+name = "{%name%}"
 version = "0.1.0"
-
-[build]
-output = ["bin"]  # "bin", "hex-bank", "raw"
 
 [run]
 mode = "tui"      # "cli", "tui"
+"#;
 
-[link]
-stack_addr = 0x0000_0100
-"#,
-                self.name,
-            );
-        fs::write(toml_path, toml_content)?;
+const MAIN_SB: &str =
+r#"fn main() -> i32 {
+    return 0;
+}
+"#;
 
-        // 2. .gitignore
-        fs::write(".gitignore", "target*/\n")?;
+/// Initialize a new project in the current directory
+#[derive(Debug, Clone, Bpaf)]
+#[bpaf(command("init"))]
+pub struct Init {
+    #[bpaf(positional, fallback("helloworld".to_string()))]
+    name: String,
+}
+
+impl Runnable for Init {
+    fn run(self, _: MetaConfig) -> anyhow::Result<()> {
+        // 1. .gitignore
+        fs::write(".gitignore", GITIGNORE)?;
+
+        // 2. Package.toml
+        fs::write(
+            "Package.toml",
+            PACKAGE_TOML.replace("{%name%}", &self.name),
+        )?;
 
         // 3. src ディレクトリ
         fs::create_dir("src")?;
 
         // 4. プログラムのテンプレート
-        let sb_path = "src/main.sb";
-        let sb_content = r#"fn main() -> i32 {
-    return 0;
-}
-"#;
-        fs::write(sb_path, sb_content)?;
+        fs::write("src/main.sb", MAIN_SB)?;
 
         Ok(())
     }

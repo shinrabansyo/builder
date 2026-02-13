@@ -1,32 +1,28 @@
 use std::process::Command as StdCommand;
 
-use crate::command::{Command, CliOptions};
-use crate::command::utils::build::build;
-use crate::config::run::RunMode;
-use crate::config::Config;
+use bpaf::Bpaf;
 
-#[derive(Debug, Clone)]
+use crate::command::Runnable;
+use crate::config_meta::MetaConfig;
+use crate::config_project::run::RunMode;
+use crate::config_project::ProjectConfig;
+use crate::tool::build;
+
+/// Debug the project
+#[derive(Debug, Clone, Bpaf)]
+#[bpaf(command("run"))]
 pub struct Run;
 
-impl From<CliOptions> for Run {
-    fn from(cmd: CliOptions) -> Self {
-        match cmd {
-            CliOptions::Run => Run,
-            _ => unreachable!(),
-        }
-    }
-}
-
-impl Command for Run {
-    fn run(self) -> anyhow::Result<()> {
+impl Runnable for Run {
+    fn run(self, meta_config: MetaConfig) -> anyhow::Result<()> {
         // 1. Package.toml 読み込み
-        let config = Config::load("Package.toml")?;
+        let prj_config = ProjectConfig::load("Package.toml")?;
 
         // 2. ビルド
-        build(&config)?;
+        build(&meta_config, &prj_config)?;
 
         // 3. エミュレータ起動
-        let mut cmd = match config.run.mode {
+        let mut cmd = match prj_config.run.mode {
             RunMode::Cli => StdCommand::new("sb-emulator-cli"),
             RunMode::Tui => StdCommand::new("sb-emulator-tui"),
         };

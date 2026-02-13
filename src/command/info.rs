@@ -1,26 +1,22 @@
-use crate::command::{Command, CliOptions};
-use crate::config::Config;
+use bpaf::Bpaf;
 
-#[derive(Debug, Clone)]
+use crate::command::Runnable;
+use crate::config_meta::MetaConfig;
+use crate::config_project::ProjectConfig;
+
+/// Display information about the project
+#[derive(Debug, Clone, Bpaf)]
+#[bpaf(command("info"))]
 pub struct Info;
 
-impl From<CliOptions> for Info {
-    fn from(cmd: CliOptions) -> Self {
-        match cmd {
-            CliOptions::Info => Info,
-            _ => unreachable!(),
-        }
-    }
-}
-
-impl Command for Info {
-    fn run(self) -> anyhow::Result<()> {
+impl Runnable for Info {
+    fn run(self, _: MetaConfig) -> anyhow::Result<()> {
         // 1. Package.toml 読み込み
-        let config = Config::load("Package.toml")?;
+        let prj_config = ProjectConfig::load("Package.toml")?;
 
         // 2. パッケージ情報表示
-        println!("Package: {}", config.package.name);
-        println!("Version: {}", config.package.version);
+        println!("Package: {}", prj_config.package.name);
+        println!("Version: {}", prj_config.package.version);
 
         Ok(())
     }
