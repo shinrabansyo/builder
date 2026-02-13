@@ -52,7 +52,7 @@ impl Runnable for CliOptions {
         run_cmd!(self.run);
         run_cmd!(self.oneshot);
 
-        Ok(())
+        Err(anyhow::anyhow!("No command specified. Use --help to see available commands."))
     }
 }
 
