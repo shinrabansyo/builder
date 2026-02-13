@@ -2,11 +2,11 @@ use std::process::Command as StdCommand;
 
 use bpaf::Bpaf;
 
-use crate::command::utils::build::build;
 use crate::command::Runnable;
 use crate::config_meta::MetaConfig;
 use crate::config_project::run::RunMode;
 use crate::config_project::ProjectConfig;
+use crate::tool::build;
 
 /// Debug the project
 #[derive(Debug, Clone, Bpaf)]

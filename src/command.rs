@@ -4,7 +4,6 @@ mod init;
 mod new;
 mod run;
 mod oneshot;
-mod utils;
 
 use bpaf::Bpaf;
 

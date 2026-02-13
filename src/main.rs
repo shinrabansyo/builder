@@ -1,6 +1,7 @@
 mod command;
 mod config_meta;
 mod config_project;
+mod tool;
 
 use std::path::PathBuf;
 

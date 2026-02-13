@@ -1,11 +1,10 @@
 use bpaf::Bpaf;
 
-use crate::command::utils::build::build as my_build;
-use crate::command::utils::convert::{convert_bin, convert_hex_bank, convert_raw};
 use crate::command::Runnable;
 use crate::config_meta::MetaConfig;
 use crate::config_project::build::OutputType;
 use crate::config_project::ProjectConfig;
+use crate::tool::{build as sb_build, convert_bin, convert_hex_bank, convert_raw};
 
 /// Build the project
 #[derive(Debug, Clone, Bpaf)]
@@ -18,7 +17,7 @@ impl Runnable for Build {
         let prj_config = ProjectConfig::load("Package.toml")?;
 
         // 2. ビルド
-        my_build(&meta_config, &prj_config)?;
+        sb_build(&meta_config, &prj_config)?;
 
         // 3. 出力形式に応じて変換
         for output_opt in &prj_config.build.output {
