@@ -1,15 +1,14 @@
 use std::fs;
-use std::path::{Path, PathBuf};
-use std::process::Command as StdCommand;
 
 use crate::config_meta::MetaConfig;
 use crate::config_project::ProjectConfig;
+use crate::tool::{assemble, compile, link};
 
 pub fn build(
     meta_config: &MetaConfig,
     prj_config: &ProjectConfig,
 ) -> anyhow::Result<()> {
-    // 1. 準備
+    // 準備
     if !fs::exists("./src/main.sb")? {
         return Err(anyhow::anyhow!("src/main.sb not found."));
     }
@@ -18,64 +17,24 @@ pub fn build(
     fs::create_dir_all("target/build")?;
     fs::create_dir_all("target/out/hex")?;
 
-    // 2. コンパイル
-    let status = StdCommand::new(&meta_config.compiler.bin)
-        .arg("-o")
-        .arg("./target/build/main.obj")
-        .arg("./src/main.sb")
-        .args(listup_lib(&meta_config)?)
-        .status()?;
-    if !status.success() {
-        return Err(anyhow::anyhow!("Compile failed."));
-    }
-
-    // 3. リンク
-    let script = format!(r#"[general]
-main = ".main.main"
-stack_addr = {}
-"#,
-        prj_config.link.stack_addr,
-    );
-    fs::write("./target/build/link.toml", script)?;
-
-    let status = StdCommand::new(&meta_config.linker.bin)
-        .arg("-c")
-        .arg("./target/build/link.toml")
-        .arg("-o")
-        .arg("./target/build/main.asm")
-        .arg("./target/build/main.obj")
-        .status()?;
-    if !status.success() {
-        return Err(anyhow::anyhow!("Link failed."));
-    }
-
-    // 4. アセンブル
-    let status = StdCommand::new(&meta_config.assembler.bin)
-        .arg("./target/build/main.asm")
-        .arg("./target/out/hex/data.hex")
-        .arg("./target/out/hex/inst.hex")
-        .status()?;
-    if !status.success() {
-        return Err(anyhow::anyhow!("Assemble failed."));
-    }
+    // ビルド実行 (.sb -> .obj -> .asm -> .hex)
+    compile(
+        meta_config,
+        "./src/main.sb",
+        "./target/build/main.obj",
+    )?;
+    link(
+        meta_config,
+        prj_config,
+        "./target/build/main.obj",
+        "./target/build/main.asm",
+    )?;
+    assemble(
+        meta_config,
+        "./target/build/main.asm",
+        "./target/out/hex/inst.hex",
+        "./target/out/hex/data.hex",
+    )?;
 
     Ok(())
-}
-
-fn listup_lib(meta_config: &MetaConfig) -> anyhow::Result<Vec<PathBuf>> {
-    fn __inner(dir: &Path) -> Vec<PathBuf> {
-        let mut libs = vec![];
-        if let Ok(entries) = fs::read_dir(dir) {
-            for entry in entries.flatten() {
-                let path: PathBuf = entry.path();
-                if path.is_dir() {
-                    libs.extend(__inner(&path));
-                } else if path.is_file() && path.extension().and_then(|s| s.to_str()) == Some("sb") {
-                    libs.push(path);
-                }
-            }
-        }
-        libs
-    }
-    Ok(__inner(&Path::new(&meta_config.compiler.lib)))
 }
