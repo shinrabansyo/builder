@@ -1,7 +1,7 @@
 use bpaf::Bpaf;
 
 use crate::command::Runnable;
-use crate::config::Config;
+use crate::config_project::Config;
 
 /// Display information about the project
 #[derive(Debug, Clone, Bpaf)]

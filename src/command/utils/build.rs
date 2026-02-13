@@ -3,7 +3,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command as StdCommand;
 
-use crate::config::Config;
+use crate::config_project::Config;
 
 pub fn build(config: &Config) -> anyhow::Result<()> {
     // 1. 準備

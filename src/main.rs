@@ -1,5 +1,5 @@
 mod command;
-mod config;
+mod config_project;
 
 use bpaf::Bpaf;
 

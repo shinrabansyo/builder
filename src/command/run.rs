@@ -4,8 +4,8 @@ use bpaf::Bpaf;
 
 use crate::command::utils::build::build;
 use crate::command::Runnable;
-use crate::config::run::RunMode;
-use crate::config::Config;
+use crate::config_project::run::RunMode;
+use crate::config_project::Config;
 
 /// Debug the project
 #[derive(Debug, Clone, Bpaf)]

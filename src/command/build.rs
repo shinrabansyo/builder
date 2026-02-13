@@ -3,8 +3,8 @@ use bpaf::Bpaf;
 use crate::command::utils::build::build as my_build;
 use crate::command::utils::convert::{convert_bin, convert_hex_bank, convert_raw};
 use crate::command::Runnable;
-use crate::config::build::OutputType;
-use crate::config::Config;
+use crate::config_project::build::OutputType;
+use crate::config_project::Config;
 
 /// Build the project
 #[derive(Debug, Clone, Bpaf)]
