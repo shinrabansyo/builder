@@ -30,7 +30,7 @@ pub struct Oneshot {
 }
 
 impl Runnable for Oneshot {
-    fn run(self, _: MetaConfig) -> anyhow::Result<()> {
+    fn run(self, meta_config: MetaConfig) -> anyhow::Result<()> {
         let home_dir = env::var("HOME")?;
         let workdir = format!("{}/.shinrabansyo/workdir/builder", home_dir);
 
@@ -44,7 +44,7 @@ impl Runnable for Oneshot {
         fs::write(toml_path, PACKAGE_TOML)?;
 
         // 3. コマンド実行
-        StdCommand::new("sb-builder")
+        StdCommand::new(&meta_config.builder.bin)
             .current_dir(&workdir)
             .args(&self.subcommand)
             .status()?;

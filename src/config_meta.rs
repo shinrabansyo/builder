@@ -1,4 +1,5 @@
 pub mod assembler;
+pub mod builder;
 pub mod compiler;
 pub mod linker;
 
@@ -8,6 +9,7 @@ use std::path::Path;
 use serde::Deserialize;
 
 use assembler::Assembler;
+use builder::Builder;
 use compiler::Compiler;
 use linker::Linker;
 
@@ -15,6 +17,8 @@ use linker::Linker;
 pub struct MetaConfig {
     #[serde(default)]
     pub assembler: Assembler,
+    #[serde(default)]
+    pub builder: Builder,
     #[serde(default)]
     pub compiler: Compiler,
     #[serde(default)]

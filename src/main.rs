@@ -16,7 +16,6 @@ struct CliOptions {
     /// Path to the meta configuration file (default: '.sb-builder/Config.toml')
     #[bpaf(long, short, fallback("./.sb-builder/Config.toml".into()))]
     meta_config: PathBuf,
-
     /// Subcommand to execute
     #[bpaf(external)]
     command: Command,
