@@ -3,6 +3,7 @@ use std::fs;
 use bpaf::Bpaf;
 
 use crate::command::Runnable;
+use crate::config_meta::MetaConfig;
 
 const GITIGNORE: &str =
 r#"target*/
@@ -38,7 +39,7 @@ pub struct Init {
 }
 
 impl Runnable for Init {
-    fn run(self) -> anyhow::Result<()> {
+    fn run(self, _: MetaConfig) -> anyhow::Result<()> {
         // 1. .gitignore
         fs::write(".gitignore", GITIGNORE)?;
 

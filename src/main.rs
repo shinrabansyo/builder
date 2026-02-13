@@ -1,4 +1,5 @@
 mod command;
+mod config_meta;
 mod config_project;
 
 use bpaf::Bpaf;
@@ -10,6 +11,7 @@ use command::new::{New, new};
 use command::oneshot::{Oneshot, oneshot};
 use command::run::{Run, run};
 use command::Runnable;
+use config_meta::MetaConfig;
 
 #[derive(Debug, Clone, Bpaf)]
 #[bpaf(options, version)]
@@ -34,17 +36,28 @@ struct CliOptions {
 }
 
 impl Runnable for CliOptions {
-    fn run(self) -> anyhow::Result<()> {
-        self.new.map(|cmd| cmd.run());
-        self.init.map(|cmd| cmd.run());
-        self.info.map(|cmd| cmd.run());
-        self.build.map(|cmd| cmd.run());
-        self.run.map(|cmd| cmd.run());
-        self.oneshot.map(|cmd| cmd.run());
+    fn run(self, meta_config: MetaConfig) -> anyhow::Result<()> {
+        macro_rules! run_cmd {
+            ($cmd:expr) => {
+                if let Some(cmd) = $cmd {
+                    return cmd.run(meta_config);
+                }
+            };
+        }
+
+        run_cmd!(self.info);
+        run_cmd!(self.new);
+        run_cmd!(self.init);
+        run_cmd!(self.build);
+        run_cmd!(self.run);
+        run_cmd!(self.oneshot);
+
         Ok(())
     }
 }
 
 fn main() -> anyhow::Result<()> {
-    cli_options().run().run()
+    cli_options()
+        .run()
+        .run(MetaConfig::load_or_default("./sbconfig/Config.toml")?)
 }

@@ -6,6 +6,8 @@ pub mod run;
 pub mod oneshot;
 mod utils;
 
+use crate::config_meta::MetaConfig;
+
 pub trait Runnable {
-    fn run(self) -> anyhow::Result<()>;
+    fn run(self, meta_config: MetaConfig) -> anyhow::Result<()>;
 }

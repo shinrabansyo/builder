@@ -3,9 +3,9 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command as StdCommand;
 
-use crate::config_project::Config;
+use crate::config_project::ProjectConfig;
 
-pub fn build(config: &Config) -> anyhow::Result<()> {
+pub fn build(prj_config: &ProjectConfig) -> anyhow::Result<()> {
     // 1. 準備
     if !fs::exists("./src/main.sb")? {
         return Err(anyhow::anyhow!("src/main.sb not found."));
@@ -31,7 +31,7 @@ pub fn build(config: &Config) -> anyhow::Result<()> {
 main = ".main.main"
 stack_addr = {}
 "#,
-        config.link.stack_addr,
+        prj_config.link.stack_addr,
     );
     fs::write("./target/build/link.toml", script)?;
 

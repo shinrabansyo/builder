@@ -4,8 +4,9 @@ use bpaf::Bpaf;
 
 use crate::command::utils::build::build;
 use crate::command::Runnable;
+use crate::config_meta::MetaConfig;
 use crate::config_project::run::RunMode;
-use crate::config_project::Config;
+use crate::config_project::ProjectConfig;
 
 /// Debug the project
 #[derive(Debug, Clone, Bpaf)]
@@ -13,15 +14,15 @@ use crate::config_project::Config;
 pub struct Run;
 
 impl Runnable for Run {
-    fn run(self) -> anyhow::Result<()> {
+    fn run(self, _: MetaConfig) -> anyhow::Result<()> {
         // 1. Package.toml 読み込み
-        let config = Config::load("Package.toml")?;
+        let prj_config = ProjectConfig::load("Package.toml")?;
 
         // 2. ビルド
-        build(&config)?;
+        build(&prj_config)?;
 
         // 3. エミュレータ起動
-        let mut cmd = match config.run.mode {
+        let mut cmd = match prj_config.run.mode {
             RunMode::Cli => StdCommand::new("sb-emulator-cli"),
             RunMode::Tui => StdCommand::new("sb-emulator-tui"),
         };

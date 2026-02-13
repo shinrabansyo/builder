@@ -6,6 +6,7 @@ use std::process::Command as StdCommand;
 use bpaf::Bpaf;
 
 use crate::command::Runnable;
+use crate::config_meta::MetaConfig;
 
 const PACKAGE_TOML: &str =
 r#"[package]
@@ -35,7 +36,7 @@ pub struct Oneshot {
 }
 
 impl Runnable for Oneshot {
-    fn run(self) -> anyhow::Result<()> {
+    fn run(self, _: MetaConfig) -> anyhow::Result<()> {
         let home_dir = env::var("HOME")?;
         let workdir = format!("{}/.shinrabansyo/workdir/builder", home_dir);
 
