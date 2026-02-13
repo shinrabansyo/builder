@@ -1,4 +1,3 @@
-use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command as StdCommand;
@@ -24,7 +23,7 @@ pub fn build(
         .arg("-o")
         .arg("./target/build/main.obj")
         .arg("./src/main.sb")
-        .args(listup_lib()?)
+        .args(listup_lib(&meta_config)?)
         .status()?;
     if !status.success() {
         return Err(anyhow::anyhow!("Compile failed."));
@@ -63,7 +62,7 @@ stack_addr = {}
     Ok(())
 }
 
-fn listup_lib() -> anyhow::Result<Vec<PathBuf>> {
+fn listup_lib(meta_config: &MetaConfig) -> anyhow::Result<Vec<PathBuf>> {
     fn __inner(dir: &Path) -> Vec<PathBuf> {
         let mut libs = vec![];
         if let Ok(entries) = fs::read_dir(dir) {
@@ -78,8 +77,5 @@ fn listup_lib() -> anyhow::Result<Vec<PathBuf>> {
         }
         libs
     }
-
-    let home_dir = env::var("HOME")?;
-    let lib_dir = format!("{}/.shinrabansyo/repos/compiler/library", home_dir);
-    Ok(__inner(&Path::new(&lib_dir)))
+    Ok(__inner(&Path::new(&meta_config.compiler.lib_dir)))
 }
