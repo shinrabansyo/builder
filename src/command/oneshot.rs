@@ -3,29 +3,23 @@ use std::fs;
 use std::path::PathBuf;
 use std::process::Command as StdCommand;
 
-use crate::command::{Command, CliOptions};
+use bpaf::Bpaf;
 
-#[derive(Debug, Clone)]
+use crate::command::Runnable;
+
+/// Execute a program without creating a project
+#[derive(Debug, Clone, Bpaf)]
+#[bpaf(command("oneshot"))]
 pub struct Oneshot {
-    do_bin_copy: bool,
+    #[bpaf(long, switch)]
+    bin_copy: bool,
+    #[bpaf(positional)]
     file: PathBuf,
+    #[bpaf(positional("SUB-COMMAND"), many)]
     subcommand: Vec<String>,
 }
 
-impl From<CliOptions> for Oneshot {
-    fn from(cmd: CliOptions) -> Self {
-        match cmd {
-            CliOptions::Oneshot { bin_copy, file, subcommand } => Oneshot {
-                do_bin_copy: bin_copy,
-                file,
-                subcommand,
-            },
-            _ => unreachable!(),
-        }
-    }
-}
-
-impl Command for Oneshot {
+impl Runnable for Oneshot {
     fn run(self) -> anyhow::Result<()> {
         let home_dir = env::var("HOME")?;
         let workdir = format!("{}/.shinrabansyo/workdir/builder", home_dir);
@@ -62,7 +56,7 @@ stack_addr = 0x0000_0100
             .status()?;
 
         // 4. out.bin (コマンド実行結果) をコピー
-        if self.do_bin_copy {
+        if self.bin_copy {
             if fs::exists(&workdir_bin)? {
                 fs::copy(&workdir_bin, "out.bin")?;
             } else {

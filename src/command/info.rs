@@ -1,19 +1,14 @@
-use crate::command::{Command, CliOptions};
+use bpaf::Bpaf;
+
+use crate::command::Runnable;
 use crate::config::Config;
 
-#[derive(Debug, Clone)]
+/// Display information about the project
+#[derive(Debug, Clone, Bpaf)]
+#[bpaf(command("info"))]
 pub struct Info;
 
-impl From<CliOptions> for Info {
-    fn from(cmd: CliOptions) -> Self {
-        match cmd {
-            CliOptions::Info => Info,
-            _ => unreachable!(),
-        }
-    }
-}
-
-impl Command for Info {
+impl Runnable for Info {
     fn run(self) -> anyhow::Result<()> {
         // 1. Package.toml 読み込み
         let config = Config::load("Package.toml")?;

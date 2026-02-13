@@ -1,23 +1,18 @@
 use std::process::Command as StdCommand;
 
-use crate::command::{Command, CliOptions};
+use bpaf::Bpaf;
+
 use crate::command::utils::build::build;
+use crate::command::Runnable;
 use crate::config::run::RunMode;
 use crate::config::Config;
 
-#[derive(Debug, Clone)]
+/// Debug the project
+#[derive(Debug, Clone, Bpaf)]
+#[bpaf(command("run"))]
 pub struct Run;
 
-impl From<CliOptions> for Run {
-    fn from(cmd: CliOptions) -> Self {
-        match cmd {
-            CliOptions::Run => Run,
-            _ => unreachable!(),
-        }
-    }
-}
-
-impl Command for Run {
+impl Runnable for Run {
     fn run(self) -> anyhow::Result<()> {
         // 1. Package.toml 読み込み
         let config = Config::load("Package.toml")?;

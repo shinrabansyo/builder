@@ -6,11 +6,6 @@ pub mod run;
 pub mod oneshot;
 mod utils;
 
-use crate::CliOptions;
-
-pub trait Command
-where
-    Self: From<CliOptions>,
-{
+pub trait Runnable {
     fn run(self) -> anyhow::Result<()>;
 }

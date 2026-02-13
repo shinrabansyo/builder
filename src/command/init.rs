@@ -1,22 +1,18 @@
 use std::fs;
 
-use crate::command::{Command, CliOptions};
+use bpaf::Bpaf;
 
-#[derive(Debug, Clone)]
+use crate::command::Runnable;
+
+/// Initialize a new project in the current directory
+#[derive(Debug, Clone, Bpaf)]
+#[bpaf(command("init"))]
 pub struct Init {
+    #[bpaf(positional, fallback("helloworld".to_string()))]
     name: String,
 }
 
-impl From<CliOptions> for Init {
-    fn from(cmd: CliOptions) -> Self {
-        match cmd {
-            CliOptions::Init { name } => Init { name },
-            _ => unreachable!(),
-        }
-    }
-}
-
-impl Command for Init {
+impl Runnable for Init {
     fn run(self) -> anyhow::Result<()> {
         // 1. Package.toml
         let toml_path = "Package.toml";

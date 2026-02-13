@@ -1,22 +1,18 @@
 use std::fs;
 
-use crate::command::{Command, CliOptions};
+use bpaf::Bpaf;
 
-#[derive(Debug, Clone)]
+use crate::command::Runnable;
+
+/// Create a new project
+#[derive(Debug, Clone, Bpaf)]
+#[bpaf(command("new"))]
 pub struct New {
+    #[bpaf(positional, fallback("helloworld".to_string()))]
     name: String,
 }
 
-impl From<CliOptions> for New {
-    fn from(cmd: CliOptions) -> Self {
-        match cmd {
-            CliOptions::New { name } => New { name },
-            _ => unreachable!(),
-        }
-    }
-}
-
-impl Command for New {
+impl Runnable for New {
     fn run(self) -> anyhow::Result<()> {
         // 1. ディレクトリ作成
         fs::create_dir_all(&self.name)?;
