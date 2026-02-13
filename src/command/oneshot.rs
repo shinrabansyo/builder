@@ -22,7 +22,7 @@ mode = "tui"      # "tui", "cli"
 #[bpaf(command("oneshot"))]
 pub struct Oneshot {
     #[bpaf(long, switch)]
-    bin_copy: bool,
+    self_copy: bool,
     #[bpaf(positional)]
     file: PathBuf,
     #[bpaf(positional("SUB-COMMAND"), many)]
@@ -49,13 +49,13 @@ impl Runnable for Oneshot {
             .args(&self.subcommand)
             .status()?;
 
-        // 4. out.bin (コマンド実行結果) をコピー
-        if self.bin_copy {
-            let bin_path = format!("{}/target/out/bin/out.bin", workdir);
-            if fs::exists(&bin_path)? {
-                fs::copy(&bin_path, "out.bin")?;
+        // 4. out.self (コマンド実行結果) をコピー
+        if self.self_copy {
+            let self_path = format!("{}/target/out/self/out.self", workdir);
+            if fs::exists(&self_path)? {
+                fs::copy(&self_path, "out.self")?;
             } else {
-                return Err(anyhow::anyhow!("`out.bin` not created."));
+                return Err(anyhow::anyhow!("`out.self` not created."));
             }
         }
 

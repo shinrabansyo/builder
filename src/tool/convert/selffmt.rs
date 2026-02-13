@@ -2,8 +2,8 @@ use std::fs;
 use std::fs::File;
 use std::io::Write;
 
-pub fn convert_bin() -> anyhow::Result<()> {
-    fs::create_dir_all("./target/out/bin")?;
+pub fn convert_self() -> anyhow::Result<()> {
+    fs::create_dir_all("./target/out/self")?;
 
     let data = fs::read_to_string("./target/out/hex/data.hex")?;
     let data = data
@@ -17,10 +17,10 @@ pub fn convert_bin() -> anyhow::Result<()> {
         .filter(|s| !s.is_empty())
         .collect::<Vec<_>>();
 
-    let mut bin_file = File::create("./target/out/bin/out.bin")?;
-    write_header(&mut bin_file, data.len() as u32, inst.len() as u32)?;
-    write_body(&mut bin_file, &data)?;
-    write_body(&mut bin_file, &inst)?;
+    let mut self_file = File::create("./target/out/self/out.self")?;
+    write_header(&mut self_file, data.len() as u32, inst.len() as u32)?;
+    write_body(&mut self_file, &data)?;
+    write_body(&mut self_file, &inst)?;
 
     Ok(())
 }
