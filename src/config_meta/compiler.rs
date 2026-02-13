@@ -6,7 +6,7 @@ use serde::Deserialize;
 #[derive(Debug, Deserialize)]
 pub struct Compiler {
     pub bin: String,
-    pub lib_dir: PathBuf,
+    pub lib: PathBuf,
 }
 
 impl Default for Compiler {
@@ -16,7 +16,7 @@ impl Default for Compiler {
 
         Compiler {
             bin: "sb-compiler".to_string(),
-            lib_dir: lib_dir.into(),
+            lib: lib_dir.into(),
         }
     }
 }

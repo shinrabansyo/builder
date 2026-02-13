@@ -77,5 +77,5 @@ fn listup_lib(meta_config: &MetaConfig) -> anyhow::Result<Vec<PathBuf>> {
         }
         libs
     }
-    Ok(__inner(&Path::new(&meta_config.compiler.lib_dir)))
+    Ok(__inner(&Path::new(&meta_config.compiler.lib)))
 }
